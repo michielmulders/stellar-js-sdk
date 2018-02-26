@@ -1,5 +1,7 @@
 # Stellar Lumens JavaScript SDK
-Playing with Stellar JavaScript SDK - Stellar Lumens.
+Playing with Stellar JavaScript SDK - Stellar Lumens: ES7 async/await example.
+This example creates two accounts on the testnet and let's the friendbot give them testnet tokens.
+Next, we transfer a small amount from one account to another.
 
 ## Installation
 Execute in terminal inside the root of the project:
