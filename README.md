@@ -12,8 +12,9 @@ Execute in terminal inside the root of the project:
 Again in terminal at root:
 `npm start`
 
-Surf with your web browser to `http://localhost:4000/` to create the accounts.
-Next, let's tranfer money from `accountA` to `accountB` by visiting `http://localhost:4000/payment`.
-Watch your terminal to see what's happening.
+1. To create the accounts, execute a POST request to `http://localhost:4000/`.
+2. Next, let's tranfer money from `accountA` to `accountB` by sending a POST request to `http://localhost:4000/payment`.
+Watch your terminal to see the output logs.
+3. Retrieve history for `accountA` by sending GET request to `http://localhost:4000/getHistory`.
 
-If problems, create issue on this repo. Thanks! :)
+If you have problems, create an issue on this repo. Thanks! :)

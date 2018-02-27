@@ -60,9 +60,16 @@ const makePayment = async (req, res) => {
       asset: Stellar.Asset.native(),
       amount: '30.0000001'
     }))
+    .addOperation(Stellar.Operation.payment({
+      destination: pairB.publicKey(),
+      asset: Stellar.Asset.native(),
+      amount: '2.0005682'
+    }))
     .build()
 
   transaction.sign(pairA)
+
+  // Let's see the XDR (encoded in base64) of the transaction we just built
   console.log("\nXDR format of transaction: ", transaction.toEnvelope().toXDR('base64'))
 
   try {
@@ -80,13 +87,37 @@ const makePayment = async (req, res) => {
   }
 }
 
-/* API Routes */
-app.get('/', createAccount)
-app.get('/payment', makePayment)
+/* Retrieve transaction history for AccountA */
+const getHistory = async (req, res) => {
+  // Retrieve latest transaction
+  let historyPage = await server.transactions()
+    .forAccount(accountA.accountId())
+    .call()
+
+  console.log(`\n\nHistory for public key ${pairA.publicKey()} with accountID ${accountA.accountId()}:`)
+  
+  // Check if there are more transactions in history
+  // Stellar only returns one (or more if you want) transaction
+  let hasNext = true
+  while(hasNext) {
+    if(historyPage.records.length === 0) {
+      console.log("\nNo more transactions!")
+      hasNext = false
+    } else {
+      // Print tx details and retrieve next historyPage
+      console.log("\nSource account: ", historyPage.records[0].source_account)
+      let txDetails = Stellar.xdr.TransactionEnvelope.fromXDR(historyPage.records[1].envelope_xdr, 'base64')
+      
+      txDetails._attributes.tx._attributes.operations.map(operation => console.log(`Transferred amount: ${operation._attributes.body._value._attributes.amount.low} XLM`))
+      historyPage = await historyPage.next()
+    }
+  }
+
+  res.send("History retrieved successful!")
+}
 
 /* CORS */
 app.use((req, res, next) => {
-
   // Website you wish to allow to connect
   res.setHeader('Access-Control-Allow-Origin', '*')
 
@@ -99,6 +130,11 @@ app.use((req, res, next) => {
   // Pass to next layer of middleware
   next()
 })
+
+/* API Routes */
+app.post('/', createAccount)
+app.post('/payment', makePayment)
+app.get('/getHistory', getHistory)
 
 /* Serve API */
 var instance = app.listen(port, () => {

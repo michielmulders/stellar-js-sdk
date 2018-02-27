@@ -13,6 +13,7 @@
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.13.2",
+    "babel-helper-explode-assignable-expression": "^6.24.1",
     "babel-loader": "^6.2.4",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
